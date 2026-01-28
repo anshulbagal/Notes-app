@@ -11,13 +11,17 @@ const handleLogin = async (e) => {
   e.preventDefault();
 
   try {
+    await account.deleteSession("current"); // clear old if exists
+  } catch {}
+
+  try {
     await account.createEmailPasswordSession(email, password);
     navigate("/notes");
   } catch (err) {
     alert("Invalid login credentials");
-    console.error(err);
   }
 };
+
 
 
   return (
