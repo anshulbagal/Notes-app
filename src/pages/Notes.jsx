@@ -157,7 +157,7 @@ const handleLogout = async () => {
     <div className={`${dark ? "bg-zinc-900 text-white" : "bg-slate-50 text-black"} p-6 min-h-screen transition`}>
 
       <div className="flex justify-between items-center mb-6">
-  <h1 className="text-2xl font-bold">🧠 Smart Notes</h1>
+  <h1 className="text-2xl font-bold">Secured Notes</h1>
 
   <button
     onClick={handleLogout}

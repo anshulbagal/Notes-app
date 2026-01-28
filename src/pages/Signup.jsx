@@ -11,40 +11,55 @@ function Signup() {
     e.preventDefault();
 
     try {
-      // 🔥 ensure no active session
-      try {
-        await account.deleteSession("current");
-      } catch {}
-
       await account.create("unique()", email, password);
       await account.createEmailPasswordSession(email, password);
-
-      navigate("/");
+      navigate("/notes");
     } catch (err) {
       alert(err.message);
     }
   };
 
   return (
-    <div>
-      <h1>Signup</h1>
+    <div className="min-h-screen flex items-center justify-center bg-slate-100">
+      <div className="bg-white p-8 rounded-2xl shadow-xl w-[350px]">
 
-      <form onSubmit={handleSignup}>
-        <input
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          placeholder="Password"
-          type="password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">Signup</button>
-      </form>
+        <h1 className="text-2xl font-bold text-center mb-6">
+          Create Account 🚀
+        </h1>
 
-      <p>
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
+        <form onSubmit={handleSignup} className="space-y-4">
+
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          <button className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition">
+            Sign Up
+          </button>
+        </form>
+
+        <p className="text-sm text-center mt-4">
+          Already have an account?{" "}
+          <Link to="/login" className="text-green-500 font-semibold">
+            Login
+          </Link>
+        </p>
+
+      </div>
     </div>
   );
 }
