@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 import { getNotes, createNote, updateNote, deleteNote } from "../service/notesService";
+import { summarizeText } from "../service/aiService";
+import { account } from "../appwrite/config";
+import { useNavigate } from "react-router-dom";
+
+
 
 function Notes() {
   const [notes, setNotes] = useState([]);
@@ -9,6 +14,12 @@ function Notes() {
   const [dragged, setDragged] = useState(null);
   const [dark, setDark] = useState(false);
 
+const navigate = useNavigate();
+
+const handleLogout = async () => {
+  await account.deleteSession("current");
+  navigate("/login");
+};
 
 
   const loadNotes = async () => {
@@ -87,6 +98,21 @@ function Notes() {
           >
             Delete
           </button>
+          {note.originalContent && (
+  <button
+    onClick={async () => {
+      await updateNote(note.$id, {
+        content: note.originalContent,
+        originalContent: null
+      });
+      loadNotes();
+    }}
+    className="text-gray-600"
+  >
+    Restore Original
+  </button>
+)}
+
 
           {note.status === "todo" && (
             <button
@@ -96,6 +122,23 @@ function Notes() {
               Move to Progress
             </button>
           )}
+          <button
+          onClick={async () => {
+  const summary = await summarizeText(note.content);
+
+  await updateNote(note.$id, {
+    originalContent: note.content,   // save backup
+    content: summary
+  });
+
+  loadNotes();
+}}
+
+
+            className="text-purple-600"
+          >
+          Summarize
+          </button>
 
           {note.status === "progress" && (
             <button
@@ -113,7 +156,17 @@ function Notes() {
   return (
     <div className={`${dark ? "bg-zinc-900 text-white" : "bg-slate-50 text-black"} p-6 min-h-screen transition`}>
 
-      <h1 className="text-3xl font-bold mb-4">Notes</h1>
+      <div className="flex justify-between items-center mb-6">
+  <h1 className="text-2xl font-bold">🧠 Smart Notes</h1>
+
+  <button
+    onClick={handleLogout}
+    className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600"
+  >
+    Logout
+  </button>
+</div>
+
       <button
   onClick={() => setDark(!dark)}
   className="mb-4 px-4 py-1 rounded bg-gray-800 text-white hover:bg-gray-700"
